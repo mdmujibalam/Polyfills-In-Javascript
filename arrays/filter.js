@@ -1,6 +1,15 @@
 const arr = [2, 3, 5, 8, 12, 20, 25, 40, 51];
 
 Array.prototype.customFilter = function (callback) {
+
+  if (!Array.isArray(this)) {
+    throw new Error("Array.prototype.customFilter can be applied only on array");
+  }
+
+  if (typeof callback !== "function") {
+    throw new TypeError(callback + " is not a function");
+  }
+
   const result = [];
 
   for (let i = 0; i < this.length; i++) {
