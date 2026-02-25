@@ -29,21 +29,23 @@ function createMySetTimeout() {
     }
   }
 
-  return { mySetTimeout, myClearTimeout };
+  function clearAllTimeouts (){
+    timerMap.clear();
+  }
+
+  return { mySetTimeout, myClearTimeout, clearAllTimeouts };
 }
 
-const { mySetTimeout, myClearTimeout } = createMySetTimeout();
+const { mySetTimeout, myClearTimeout, clearAllTimeouts } = createMySetTimeout();
 
-// Test 1: Basic delay
 const id1 = mySetTimeout(() => console.log("✅ Basic OK"), 100);
 
-// Test 2: Clear works
 const id2 = mySetTimeout(() => console.log("Never fires"), 50);
 myClearTimeout(id2); // ✅ Cancelled!
 
-// Test 3: Args passed
-mySetTimeout((a, b) => console.log(a + b), 200, 5, 10); // 15
+mySetTimeout((a, b) => console.log(a + b), 200, 5, 10); 
 
-// Test 4: Multiple timers
-mySetTimeout(() => {}, 300);
-mySetTimeout(() => {}, 500); // Independent IDs!
+mySetTimeout(() => {console.log("3000ms called")}, 3000);
+mySetTimeout(() => {console.log("5000ms called")}, 5000); 
+
+//clearAllTimeouts();
