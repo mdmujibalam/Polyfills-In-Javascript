@@ -32,6 +32,8 @@
 
 // person.checkThis();
 
+// "use strict" mode sets global window object to undefined
+
 /*Next Question*/
 
 // const myName = {
@@ -57,7 +59,7 @@
 // }
 
 // function sayHello(){
-//console.log(`Hi ${this.lastName}`);
+// console.log(`Hi ${this.lastName}`);
 //     return "Hello" + this.lastName;
 // }
 

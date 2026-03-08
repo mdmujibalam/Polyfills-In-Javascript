@@ -5,7 +5,7 @@ Function.prototype.customApply = function (context = globalThis, args) {
 
   let uniqueProp = Math.random();
 
-  if (context[uniqueProp] !== undefined) uniqueProp = Math.random();
+  while(context[uniqueProp] !== undefined) uniqueProp = Math.random();
 
   context[uniqueProp] = this;
   const result = context[uniqueProp](...args);
