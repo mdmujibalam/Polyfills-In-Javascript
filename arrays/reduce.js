@@ -23,5 +23,10 @@ const sum = arr.customReduce((acc, curr) => acc + curr, 10);
 
 //const sum = arr.reduce((acc,curr, index, arr)=>acc+curr,0);
 
+// const sum = arr.reduce((prevVal, currVal, index, arr)=>{
+//   const updatedVal = prevVal + currVal;
+//   return updatedVal;
+// },0);
+
 console.log("original Arr", arr);
 console.log("sum==>", sum);
