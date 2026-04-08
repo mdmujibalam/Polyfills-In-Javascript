@@ -1,14 +1,11 @@
-//Create an async task runner where async functions are run one after the other. You can provide
-//the number of concurrent tasks that can be performed (by default 1).
-
-class TaskRunner {
+class TaskRuner {
   constructor(concurrency = 1) {
     this.concurrency = concurrency;
     this.queue = [];
     this.runningTasks = 0;
   }
 
-  async push(task) {
+  push(task) {
     return new Promise((resolve, reject) => {
       if (this.runningTasks < this.concurrency) {
         this.execute({ task, resolve, reject });
@@ -25,30 +22,32 @@ class TaskRunner {
     try {
       const result = await task();
       resolve(result);
-    } catch (error) {
-      reject(error);
+    } catch (err) {
+      reject(err);
     } finally {
       this.runningTasks -= 1;
 
-      if (this.queue.length && this.runningTasks < this.concurrency) {
-        const nextTask = this.queue.shift();
-        this.execute(nextTask);
+      if (this.queue.length > 0 && this.runningTasks < this.concurrency) {
+        const currTask = this.queue.shift();
+        this.execute(currTask);
       }
     }
   }
 }
 
-const runner = new TaskRunner(2);
+const delays = [1000, 500, 800, 300, 600, 400];
 
-const tasks = [1000, 500, 800, 300].map(
-  (delay) => () =>
-    new Promise((r) =>
+const tasks = delays.map(
+  (delay) =>
+   function(){
+    return   new Promise((resolve, reject) => {
       setTimeout(() => {
+        resolve(delay);
         console.log(`Task ${delay}ms done`);
-        r(delay);
-      }, delay),
-    ),
+      }, delay);
+    })}
 );
 
-// These run 2 at a time!
-Promise.all(tasks.map((task) => runner.push(task))).then(console.log);
+const runner = new TaskRuner(3);
+
+Promise.all(tasks.map((task) => runner.push(task)));
