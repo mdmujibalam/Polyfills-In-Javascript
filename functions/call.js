@@ -1,4 +1,4 @@
-// console.log(this);
+//  console.log(this);
 
 // function fun(){
 //     console.log("inside",this);
@@ -14,6 +14,8 @@
 
 /*Next Question*/
 
+// "use strict" mode sets global window object to undefined
+
 // "use strict"
 
 // const person={
@@ -25,12 +27,12 @@
 //            console.log(this);
 //         }
 
-//         checkThisAgain.call(this);
-//         //checkThisAgain();
+//         // checkThisAgain.call(this);
+//          checkThisAgain();
 //     }
 // }
 
-// person.checkThis();
+//  person.checkThis();
 
 // "use strict" mode sets global window object to undefined
 
@@ -108,16 +110,6 @@
 
 /*Next Question*/
 
-// Function.prototype.myCall = function(obj = globalThis, ...args) {
-//   // Add function to obj temporarily
-//   obj.tempFn = this;
-//   // Execute with args
-//   const result = obj.tempFn(...args);
-//   // Clean up
-//   delete obj.tempFn;
-//   return result;
-// };
-
 Function.prototype.customCall = function (context = globalThis, ...args) {
   if (typeof this !== "function") {
     throw new Error("Not callable");
@@ -156,3 +148,35 @@ const printDetails = function (city, country) {
 
 printDetails.customCall(obj1, "Chandigarh", "India");
 printDetails.customCall(obj2, "Zirakpur", "Punjab");
+
+
+// const person1={
+//     name:"Mujib",
+//     age:26,
+//     greet(){
+//      console.log(`Hi, I am ${this.name}`);
+//     }
+// }
+
+// person1.greet();
+// const greet=person1.greet;
+// greet();
+
+
+// const emp1={
+//     name:"Hamid",
+//     empCode: "112233",
+//     role:"Frontend Developer"
+// }
+
+// const emp2={
+//     name:"Mujib",
+//     empCode: "445566",
+//     role:"Backend Developer"
+// }
+
+// function sayHello(age){
+//     console.log(`Hi, I am ${this.name} and I am ${age} years old & I am a ${this.role}`);
+// }
+
+// sayHello.call(emp2,26);
