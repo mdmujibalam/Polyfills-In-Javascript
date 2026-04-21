@@ -19,15 +19,15 @@ const shallowCopyObj= Object.assign({},originalObj);
 //const deepCopyObj=JSON.parse(JSON.stringify(originalObj));
 const deepCopyObj= structuredClone(originalObj);
 
-// originalObj.name="Hamid";
-// originalObj.age="30";
-// originalObj.address.city="Patna";
-// originalObj.address.pinCode="1112233"
+shallowCopyObj.name="Hamid";
+shallowCopyObj.age="30";
+shallowCopyObj.address.city="Patna";
+shallowCopyObj.address.pinCode="1112233"
 
 
-// console.log("originalObj", originalObj);
-// console.log("shallowCopyObj", shallowCopyObj);
-// console.log("deepCopyObj", deepCopyObj);
+console.log("originalObj", originalObj);
+console.log("shallowCopyObj", shallowCopyObj);
+console.log("deepCopyObj", deepCopyObj);
 
 // console.log("\n=== TOP-LEVEL PROPERTIES (look identical) ===");
 // console.log("originalObj.name:", originalObj.name);        // "Mujib"
@@ -50,6 +50,6 @@ const deepCopyObj= structuredClone(originalObj);
 // console.log("Shallow time changed?", shallowCopyObj.currentTime.getSeconds()); // 0 (changed!)
 // console.log("Deep time changed?", deepCopyObj.currentTime.getSeconds());       // original seconds (unchanged!)
 
-console.log("\n=== REFERENCE CHECK ===");
-console.log("map refs same?", originalObj.map === shallowCopyObj.map);     // true ❌
-console.log("map refs same?", originalObj.map === deepCopyObj.map);       //false
+// console.log("\n=== REFERENCE CHECK ===");
+// console.log("map refs same?", originalObj.map === shallowCopyObj.map);     // true ❌
+// console.log("map refs same?", originalObj.map === deepCopyObj.map);       //false
