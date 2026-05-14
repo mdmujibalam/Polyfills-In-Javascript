@@ -180,3 +180,20 @@ printDetails.customCall(obj2, "Zirakpur", "Punjab");
 // }
 
 // sayHello.call(emp2,26);
+
+// ❌ Bad — storing DOM reference that gets removed
+const elements = {
+  button: document.getElementById("btn"),   // reference stored
+  modal:  document.getElementById("modal")  // reference stored
+}
+
+// later you remove the element from DOM
+document.body.removeChild(document.getElementById("modal"))
+
+// but elements.modal still holds reference in JS!
+// modal is removed from page but NOT from memory ❌
+console.log(elements.modal)  // still accessible → memory leak
+
+// ✅ Fix — clear the reference after removing from DOM
+document.body.removeChild(document.getElementById("modal"))
+elements.modal = null  // ✅ now garbage collector can free it

@@ -2,7 +2,7 @@ const arr = [3, 12, 7, 15, 20, 22, 12, 80, 50];
 
 Array.prototype.customInclude = function (val, fromIndex) {
   const n = this.length;
-  let startIdx;
+  let startIdx=0;
 
   if (fromIndex < 0) {
     startIdx = Math.max(0, n + fromIndex);

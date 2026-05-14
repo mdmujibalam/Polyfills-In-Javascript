@@ -24,7 +24,7 @@ console.log(obj1.getUserInfo());
 console.log(obj2.getUserInfo());
 //Shows: My name is Hamid who is from Dhanbad
 
-console.log(obj1.hasOwnProperty(getUserInfo));
+console.log(obj1.hasOwnProperty("getUserInfo"));
 //Shows: false
 
 console.log("obj1.__proto__", obj1.__proto__);

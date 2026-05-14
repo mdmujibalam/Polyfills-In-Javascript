@@ -13,7 +13,7 @@ Array.prototype.customFilter = function (callback) {
   const result = [];
 
   for (let i = 0; i < this.length; i++) {
-    const val = callback(this[i], i);
+    const val = callback(this[i], i, this);
 
     if (val) result.push(this[i]);
   }
