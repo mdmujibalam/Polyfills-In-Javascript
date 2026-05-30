@@ -1,53 +1,79 @@
-class TaskRuner {
-  constructor(concurrency = 1) {
-    this.concurrency = concurrency;
-    this.queue = [];
-    this.runningTasks = 0;
+class TaskRunner{
+  
+  constructor(concurrency){
+    this.concurrency=concurrency;
+    this.queue=[];
+    this.runningTasks=0;
+  }
+  
+  addTask(task){
+    if(this.runningTasks < this.concurrency){
+      this.runningTasks+=1;
+      this.executeTask(task);
+    }
+    else{
+      this.queue.push(task);
+    }
+  }
+  
+  async executeTask(task){
+    try{
+      await task();
+    }catch(err){
+      console.log("Errr occurred");
+    }finally{
+      this.runningTasks--;
+      this.drain();
+    }
   }
 
-  push(task) {
-    return new Promise((resolve, reject) => {
-      if (this.runningTasks < this.concurrency) {
-        this.execute({ task, resolve, reject });
-      } else {
-        this.queue.push({ task, resolve, reject });
-      }
-    });
-  }
-
-  async execute(taskObj) {
-    const { task, resolve, reject } = taskObj;
-    this.runningTasks += 1;
-
-    try {
-      const result = await task();
-      resolve(result);
-    } catch (err) {
-      reject(err);
-    } finally {
-      this.runningTasks -= 1;
-
-      if (this.queue.length > 0 && this.runningTasks < this.concurrency) {
-        const currTask = this.queue.shift();
-        this.execute(currTask);
-      }
+  drain(){
+    while(this.runningTasks < this.concurrency && this.queue.length > 0){
+      const newTask= this.queue.shift();
+      this.runningTasks+=1;
+      this.executeTask(newTask);
     }
   }
 }
 
-const delays = [1000, 500, 800, 300, 600, 400];
+const delay = (ms) =>
+  new Promise(resolve => setTimeout(resolve, ms));
 
-const tasks = delays.map(
-  (delay) =>
-   function(){
-    return   new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(delay);
-        console.log(`Task ${delay}ms done`);
-      }, delay);
-    })}
-);
+const task1= async ()=>{
+  console.log("t1 started");
+  await delay(1000);
+  console.log("t1 finished");
+}
 
-const runner = new TaskRuner(3);
+const task2= async ()=>{
+  console.log("t2 started");
+  await delay(800);
+  console.log("t2 finished");
+}
 
-Promise.all(tasks.map((task) => runner.push(task)));
+const task3= async ()=>{
+  console.log("t3 started");
+  await delay(1500);
+  console.log("t3 finished");
+}
+
+const task4= async ()=>{
+  console.log("t4 started");
+  await delay(2000);
+  console.log("t4 finished");
+}
+
+const task5= async ()=>{
+  console.log("t5 started");
+  await delay(1700);
+  console.log("t5 finished");
+}
+
+const taskList= [task1,task2,task3,task4,task5];
+
+const taskRunner = new TaskRunner(3);
+
+taskList.forEach((task)=>{
+  taskRunner.addTask(task);
+});
+
