@@ -1,76 +1,72 @@
 Promise.customAllSettled = function (promises) {
   return new Promise((resolve, reject) => {
-    if (!Array.isArray(promises)) {
-      throw new TypeError("Promise.allSettled accepts only array");
+    if (!Array.isArray(promises))
+      throw new Error("Promse.customAllSettled is not an array");
+
+    const n = promises.length;
+    const result = [];
+    let completedPromises = 0;
+
+    //edge case
+    if (n === 0) {
+      resolve([]);
+      return;
     }
 
-    let completed = 0;
-    let result = [];
-    const total = promises.length;
-
-    if (total === 0) return resolve(result);
-
-    for (let i = 0; i < total; i++) {
+    for (let i = 0; i < n; i++) {
       Promise.resolve(promises[i])
-        .then((res) => {
-          result[i] = { status: "fulfilled", value: res };
-          completed++;
+        .then((val) => {
+          result[i] = { status: "fulfilled", value: val };
+          completedPromises++;
 
-          if (completed === total) resolve(result);
+          if (completedPromises === n) resolve(result);
         })
         .catch((err) => {
           result[i] = { status: "rejected", reason: err };
-          completed++;
+          completedPromises++;
 
-          if (completed === total) resolve(result);
+          if (completedPromises === n) resolve(result);
         });
     }
   });
 };
 
-async function fetchUser(userId) {
+const delaySuccess = (ms, msg) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve("mdmujibalam");
-      //    reject("2000 ms error")
-    }, 2000);
+      resolve(msg);
+    }, ms);
   });
-}
+};
 
-async function fetchPosts(userId) {
+const delayReject = (ms, msg) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(["Post1", "Post2", "Post3"]);
-      //reject("3000 ms error")
-    }, 3000);
+      reject(msg);
+    }, ms);
   });
-}
+};
 
-async function fetchProfile(userId) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve({
-        profileId: "mdmujibalam",
-        name: "Md Mujib Alam",
-        address: "Chandigarh",
-      });
-      //reject("1500 ms error")
-    }, 1500);
-  });
-}
+Promise.customAllSettled([
+  delaySuccess(400, "msg1"),
+  delayReject(200, "err1"),
+  delaySuccess(300, "msg2"),
+])
+  .then((res) => console.log("res1", res))
+  .catch((err) => console.log("err1", err));
 
-async function loadDashboard(userId) {
-  try {
-    const [user, posts, profile] = await Promise.customAllSettled([
-      fetchUser(userId), // 2000ms
-      fetchPosts(userId), // 3000ms
-      fetchProfile(userId), // 1500ms
-    ]);
+Promise.customAllSettled([])
+  .then((res) => console.log("res2", res))
+  .catch((err) => console.log("err2", err));
 
-    console.log("Dashboard loaded:", { user, posts, profile });
-  } catch (error) {
-    console.error("Failed to load dashboard:", error);
-  }
-}
+Promise.customAllSettled([
+  delaySuccess(400, "msg1"),
+  "hello",
+  delaySuccess(300, "msg2"),
+])
+  .then((res) => console.log("res3", res))
+  .catch((err) => console.log("err3", err));
 
-loadDashboard(123);
+Promise.customAllSettled([delayReject(200, "err1"), delayReject(250, "err2")])
+  .then((res) => console.log("res4", res))
+  .catch((err) => console.log("err4", err));
