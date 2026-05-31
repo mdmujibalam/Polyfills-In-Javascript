@@ -1,15 +1,13 @@
 Promise.customRace = function (promises) {
   return new Promise((resolve, reject) => {
-    if (!Array.isArray(promises)) {
-      throw new TypeError("Promise.race accepts only array");
-    }
+    const n = promises.length;
 
-    const total = promises.length;
+    if (!Array.isArray(promises))
+      throw new Error("Promise.customAny can be applied to array only");
 
-    // if (total === 0)
-    //   return reject(new AggregateError([], "All promises were rejected"));
+    if (n === 0) return;
 
-    for (let i = 0; i < total; i++) {
+    for (let i = 0; i < n; i++) {
       Promise.resolve(promises[i])
         .then((res) => {
           resolve(res);
@@ -21,63 +19,47 @@ Promise.customRace = function (promises) {
   });
 };
 
-async function fetchUser(userId) {
-  return new Promise((resolve, reject) => {
+const delaySuccess = (ms, msg) =>
+  new Promise((resolve, reject) =>
     setTimeout(() => {
-      //resolve("mdmujibalam");
-      reject("2000 ms error");
-    }, 2000);
-  });
-}
+      resolve(msg);
+    }, ms),
+  );
 
-async function fetchPosts(userId) {
-  return new Promise((resolve, reject) => {
+const delayRejected = (ms, msg) =>
+  new Promise((resolve, reject) =>
     setTimeout(() => {
-      resolve(["Post1", "Post2", "Post3"]);
-      //reject("3000 ms error");
-    }, 3000);
-  });
-}
+      reject(msg);
+    }, ms),
+  );
 
-async function fetchProfile(userId) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // resolve({
-      //   profileId: "mdmujibalam",
-      //   name: "Md Mujib Alam",
-      //   address: "Chandigarh",
-      // });
-      reject("1500 ms error");
-    }, 15000);
-  });
-}
+Promise.customRace([
+  delaySuccess(450, "msg1"),
+  delaySuccess(250, "msg2"),
+  delaySuccess(210, "msg3"),
+  delayRejected(200, "rejectMSG"),
+])
+  .then((res) => console.log("res1", res))
+  .catch((err) => console.log("err1", err));
 
-async function loadDashboard(userId) {
-  try {
-    const res = await Promise.customRace([
-      fetchUser(userId), // 2000ms
-      fetchPosts(userId), // 3000ms
-      fetchProfile(userId), // 1500ms
-    ]);
+Promise.customRace([
+  delaySuccess(450, "msg1"),
+  delaySuccess(250, "msg2"),
+  delaySuccess(200, "msg3"),
+  delayRejected(100, "rejectMSG"),
+])
+  .then((res) => console.log("res1", res))
+  .catch((err) => console.log("err1", err));
 
-    console.log("Dashboard loaded:", res);
-  } catch (error) {
-    console.error("Failed to load dashboard:", error);
-  }
-}
+Promise.customRace([
+  delayRejected(450, "msg1"),
+  delayRejected(250, "msg2"),
+  delayRejected(100, "msg3"),
+  delayRejected(200, "rejectMSG"),
+])
+  .then((res) => console.log("res2", res))
+  .catch((err) => console.log("err2", err));
 
-loadDashboard(123);
-
-//Example2
-
-// const p1 = new Promise((resolve,reject)=> setTimeout(()=>reject('p1 resolved'),1000));
-// const p2 = new Promise((resolve,reject)=> setTimeout(()=>reject('p2 resolved'),200));
-// const p3 = new Promise((resolve,reject)=> setTimeout(()=>reject('p3 resolved'),3000));
-
-// Promise.any([p1,p2,p3])
-//        .then((res)=>{
-//         console.log(res);
-//        })
-//        .catch(err=>{
-//         console.log("All promises were rejected");
-//        })
+Promise.customRace([])
+  .then((res) => console.log("res3", res))
+  .catch((err) => console.log("err3", err));
