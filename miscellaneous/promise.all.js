@@ -1,70 +1,73 @@
 Promise.customAll = function (promises) {
   return new Promise((resolve, reject) => {
-    if (!Array.isArray(promises)) {
-      throw new TypeError("Promise.all accepts only array");
+    if (!Array.isArray(promises))
+      throw new Error("Promise.customAll is only applicable to Array");
+
+    const n = promises.length;
+    const result = new Array(n);
+    let count = 0;
+
+    //edge case
+    if (n === 0) {
+      resolve([]);
+      return;
     }
 
-    let completed = 0;
-    let result = [];
-    const total = promises.length;
-
-    if (total === 0) return resolve(result);
-
-    for (let i = 0; i < total; i++) {
+    for (let i = 0; i < n; i++) {
       Promise.resolve(promises[i])
-        .then((res) => {
-          result[i] = res;
-          completed++;
+        .then((val) => {
+          result[i] = val;
+          count++;
 
-          if (completed === total) resolve(result);
+          if (count === n) resolve(result);
         })
         .catch((err) => reject(err));
     }
   });
 };
 
-async function fetchUser(userId) {
-  return new Promise((resolve, reject) => {
+const delayResolved = (ms, message) =>
+  new Promise((resolve, reject) =>
     setTimeout(() => {
-      resolve("mdmujibalam");
-       //reject("2000 ms error")
-    }, 2000);
-  });
-}
+      resolve(message);
+    }, ms),
+  );
 
-async function fetchPosts(userId) {
-  return new Promise((resolve, reject) => {
+const delayRejected = (ms, message) =>
+  new Promise((resolve, reject) =>
     setTimeout(() => {
-      resolve(["Post1", "Post2", "Post3"]);
-    }, 3000);
-  });
-}
+      reject(message);
+    }, ms),
+  );
 
-async function fetchProfile(userId) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve({
-        profileId: "mdmujibalam",
-        name: "Md Mujib Alam",
-        address: "Chandigarh",
-      });
-       //reject("1500 ms error")
-    }, 1500);
-  });
-}
+//Test Case1
+Promise.customAll([
+  delayResolved(400, "successMsg1"),
+  delayResolved(250, "successMsg2"),
+  delayResolved(200, "successMsg3"),
+])
+  .then((res) => console.log("res1", res))
+  .catch((err) => console.log("err1", err));
 
-async function loadDashboard(userId) {
-  try {
-    const [user, posts, profile] = await Promise.all([
-      fetchUser(userId), // 2000ms
-      fetchPosts(userId), // 3000ms
-      fetchProfile(userId), // 1500ms
-    ]);
+//Test Case2
+Promise.customAll([
+  delayResolved(400, "successMsg1"),
+  "val",
+  delayResolved(200, "successMsg3"),
+])
+  .then((res) => console.log("res2", res))
+  .catch((err) => console.log("err2", err));
 
-    console.log("Dashboard loaded:", { user, posts, profile });
-  } catch (error) {
-    console.error("Failed to load dashboard:", error);
-  }
-}
+//Test Case3
+Promise.customAll([
+  delayResolved(400, "successMsg1"),
+  Promise.reject("errMsg2"),
+  delayResolved(200, "successMsg3"),
+])
+  .then((res) => console.log("res3", res))
+  .catch((err) => console.log("err3", err));
 
-loadDashboard(123);
+//Test Case4
+Promise.customAll([])
+  .then((res) => console.log("res4", res))
+  .catch((err) => console.log("err4", err));
