@@ -1,3 +1,5 @@
+
+//Throttling is also a performance optimization technique where a function is executed only once during a fixed interval of time
 const btn = document.getElementById("login-btn");
 
 const callLoginAPI = (query) => {

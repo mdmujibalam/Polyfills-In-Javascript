@@ -1,3 +1,5 @@
+//Debouncing is a performance optimization technique where a function gets executed only after a certain delay
+
 const callSearchAPI = (query) => {
   console.log("Search API called:", query);
 };
