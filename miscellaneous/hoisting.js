@@ -27,11 +27,17 @@
 
 
 
-// console.log(sayHello());
+//console.log(sayHello); 
 
-// var sayHello=()=>{
-//     console.log("Hii !");
-// }
+// var sayHello=()=>{ 
+
+//     console.log("Hii !"); 
+
+// } 
+
+// console.log(sayHello); 
+
+//console.log(sayHello()) ;
 
 // console.log("1"+2);
 
