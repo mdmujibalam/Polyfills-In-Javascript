@@ -1,6 +1,6 @@
 const arr = [3, 12, 7, 15, 20, 22, 12, 80, 50];
 
-Array.prototype.customInclude = function (val, fromIndex) {
+Array.prototype.customInclude = function (val, fromIndex=0) {
   const n = this.length;
   let startIdx=0;
 
