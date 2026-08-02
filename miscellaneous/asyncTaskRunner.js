@@ -1,3 +1,6 @@
+//Create an async task runner where async functions are run one after the other. You can provide
+//the number of concurrent tasks that can be performed (by default 1)
+
 class TaskRunner{
   
   constructor(concurrency){
