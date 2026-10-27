@@ -13,8 +13,15 @@ const debounce = (fun, delay) => {
   };
 };
 
-const debouncedSearch = debounce(callSearchAPI, 1000);
 
-const textInput = document.getElementById("textInput");
+function searchFun(value){
+  console.log("Searching for:", value);
+}
 
-textInput.addEventListener("input", (e) => debouncedSearch(e.target.value));
+const search= debounce(searchFun, 1000);
+
+search("H");
+search("He");
+search("Hel");
+search("Hell");
+search("Hello");

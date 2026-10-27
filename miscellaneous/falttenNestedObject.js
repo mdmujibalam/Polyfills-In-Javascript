@@ -1,27 +1,27 @@
-function flattenNestedObject(inputObj) {
-  const result = {};
+function flattenNestedObject(obj){
+   const res={};
 
-  function flattenObject(obj, parent) {
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        const newKey = parent ? `${parent}.${key}` : key;
+   function flattenHelper(currObj, parent){
+          
+          for(const key in currObj){
+             if(Object.prototype.hasOwnProperty.call(currObj,key)){
+                const value= currObj[key];
 
-        if (
-          typeof obj[key] === "object" &&
-          obj[key] !== null &&
-          !Array.isArray(obj[key])
-        ) {
-          flattenObject(obj[key], newKey);
-        } else {
-          result[newKey] = obj[key];
-        }
-      }
-    }
-  }
+                const newKey = Array.isArray(currObj) ? `${parent}[${key}]` : parent ? `${parent}.${key}` : key;
+                
+                if(value !== null && (typeof value ==="object" || Array.isArray(value))){
+                    flattenHelper(value, newKey);
+                }else{
+                    res[newKey]=value;
+                }
+             }
+          }
 
-  flattenObject(inputObj, "");
+   }
 
-  return result;
+   flattenHelper(obj,"");
+
+   return res;
 }
 
 const user1 = {
@@ -55,9 +55,27 @@ const user2 = {
   skills: ["javascript", "node.js", "html"],
 };
 
+const user3={
+  a: 1,
+  b: {
+    c: 2,
+    d: [3, { e: 4 }]
+  },
+  f: 'hello',
+  address:{
+    pin:"2541",
+    stateInfo:{
+        state:"JH"
+    }
+  },
+  hobbies:["A","B","C"]
+};
+
 console.log("user1", flattenNestedObject(user1));
 
 console.log("user2", flattenNestedObject(user2));
+
+console.log("user3", flattenNestedObject(user3));
 
 // Obj.hasOwnProperty() Method Implementation
 

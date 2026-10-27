@@ -10,20 +10,26 @@ const throttle = (fun, delay) => {
   let flag = false;
 
   return function (...args) {
-    if (!flag) {
+    if (flag)return;
+
       flag = true;
       fun(...args);
       setTimeout(() => {
         flag = false;
       }, delay);
-    }
+    
   };
 };
 
-const throttleWrapper = throttle(callLoginAPI, 2000);
+function scroll(){
+  console.log("Scroll triggered");
+}
 
-btn.addEventListener("click", () =>
-  throttleWrapper({ name: "Mujib", password: "1234" }),
-);
+const throttleScroll= throttle(scroll,1000);
 
-// btn.addEventListener("click", ()=>callLoginAPI({"name":"Mujib", "password":"1234"}));
+throttleScroll();
+throttleScroll();
+throttleScroll();
+
+
+
